@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../config/api';
 import './ProductDetail.css';
 
 interface Product {
@@ -10,6 +10,7 @@ interface Product {
   price: number;
   rating: number;
   image: string | null;
+  image_url: string | null;
   description: string;
   created_at: string;
   updated_at: string;
@@ -41,14 +42,15 @@ const ProductDetail = () => {
     setError('');
 
     try {
-      const response = await axios.get<Product>(`http://localhost:8000/api/products/${id}`);
-      setProduct(response.data);
+      const response = await apiClient.get<{ data: Product }>(`/products/${id}`);
+      const productData = response.data.data || response.data;
+      setProduct(productData);
       setFormData({
-        name: response.data.name,
-        category: response.data.category,
-        price: response.data.price.toString(),
-        rating: response.data.rating.toString(),
-        description: response.data.description || '',
+        name: productData.name || '',
+        category: productData.category || '',
+        price: productData.price?.toString() || '0',
+        rating: productData.rating?.toString() || '0',
+        description: productData.description || '',
       });
     } catch (err) {
       setError('Failed to fetch product');
@@ -95,16 +97,22 @@ const ProductDetail = () => {
 
       formDataToSend.append('_method', 'PUT');
 
-      await axios.post(`http://localhost:8000/api/products/${id}`, formDataToSend, {
+      const response = await apiClient.post(`/products/${id}`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
+      // Update the product with the response data
+      const updatedProduct = response.data.data || response.data;
+      setProduct(updatedProduct);
+      
       setIsEditing(false);
       setImageFile(null);
       setImagePreview(null);
-      fetchProduct();
+      
+      // Optionally refetch to ensure we have latest data
+      await fetchProduct();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update product');
       console.error(err);
@@ -117,7 +125,7 @@ const ProductDetail = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:8000/api/products/${id}`);
+      await apiClient.delete(`/products/${id}`);
       navigate('/dashboard');
     } catch (err) {
       setError('Failed to delete product');
@@ -125,9 +133,11 @@ const ProductDetail = () => {
     }
   };
 
-  const getImageUrl = (image: string | null) => {
-    if (!image) return 'https://via.placeholder.com/600x400?text=No+Image';
-    return `http://localhost:8000/storage/${image}`;
+  const getImageUrl = (imageUrl: string | null, imagePath: string | null) => {
+    if (imageUrl) return imageUrl;
+    if (!imagePath) return 'https://via.placeholder.com/600x400?text=No+Image';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8000';
+    return `${baseUrl}/storage/${imagePath}`;
   };
 
   const categories = ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'];
@@ -163,7 +173,7 @@ const ProductDetail = () => {
       {!isEditing ? (
         <div className="product-detail-content">
           <div className="product-image-large">
-            <img src={getImageUrl(product.image)} alt={product.name} />
+            <img src={getImageUrl(product.image_url, product.image)} alt={product.name} />
           </div>
 
           <div className="product-info">
@@ -278,7 +288,7 @@ const ProductDetail = () => {
               {(imagePreview || product.image) && (
                 <div className="image-preview">
                   <img 
-                    src={imagePreview || getImageUrl(product.image)} 
+                    src={imagePreview || getImageUrl(product.image_url, product.image)} 
                     alt="Preview" 
                   />
                 </div>

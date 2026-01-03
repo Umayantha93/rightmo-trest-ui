@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import apiClient from '../config/api';
 
 interface User {
   id: number;
@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
       fetchUser();
     } else {
       setIsLoading(false);
@@ -34,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/me');
+      const response = await apiClient.get('/me');
       setUser(response.data);
     } catch (error) {
       console.error('Failed to fetch user:', error);
@@ -45,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('http://localhost:8000/api/login', {
+    const response = await apiClient.post('/login', {
       email,
       password,
     });
@@ -54,14 +53,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(authToken);
     setUser(userData);
     localStorage.setItem('token', authToken);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

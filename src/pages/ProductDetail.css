@@ -14,17 +14,17 @@
 
 .back-btn {
   padding: 0.5rem 1.25rem;
-  background: #6c757d;
+  background: #6b7280;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .back-btn:hover {
-  background: #5a6268;
+  background: #4b5563;
 }
 
 .action-buttons {
@@ -34,41 +34,42 @@
 
 .edit-btn {
   padding: 0.5rem 1.25rem;
-  background: #667eea;
+  background: #3b82f6;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .edit-btn:hover {
-  background: #5568d3;
+  background: #2563eb;
 }
 
 .delete-btn {
   padding: 0.5rem 1.25rem;
-  background: #dc3545;
+  background: #ef4444;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .delete-btn:hover {
-  background: #c82333;
+  background: #dc2626;
 }
 
 .product-detail-content {
   max-width: 1200px;
   margin: 0 auto;
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
@@ -99,7 +100,7 @@
 .category-badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: #3b82f6;
   color: white;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -129,7 +130,7 @@
 .meta-item .price {
   font-size: 2rem;
   font-weight: 700;
-  color: #28a745;
+  color: #10b981;
 }
 
 .meta-item .rating {
@@ -165,8 +166,9 @@
   margin: 0 auto;
   background: white;
   padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
 }
 
 .product-edit-form h2 {
@@ -197,17 +199,18 @@
 .form-group textarea,
 .form-group select {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .image-preview {
@@ -233,34 +236,34 @@
 
 .save-btn {
   padding: 0.75rem 2rem;
-  background: #28a745;
+  background: #10b981;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .save-btn:hover {
-  background: #218838;
+  background: #059669;
 }
 
 .cancel-btn {
   padding: 0.75rem 2rem;
-  background: #6c757d;
+  background: #6b7280;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  transition: background 0.3s;
+  transition: background 0.2s;
 }
 
 .cancel-btn:hover {
-  background: #5a6268;
+  background: #4b5563;
 }
 
 .loading,
@@ -275,9 +278,9 @@
   max-width: 1200px;
   margin: 0 auto 1rem;
   padding: 1rem;
-  background: #fee;
-  color: #c33;
-  border-left: 4px solid #c33;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
   border-radius: 6px;
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import apiClient from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
@@ -11,6 +11,7 @@ interface Product {
   price: number;
   rating: number;
   image: string | null;
+  image_url?: string | null;
   description: string;
 }
 
@@ -77,11 +78,13 @@ const Dashboard = () => {
       if (minPrice) params.min_price = minPrice;
       if (maxPrice) params.max_price = maxPrice;
 
-      const response = await axios.get<ProductsResponse>('http://localhost:8000/api/products', { params });
-      setProducts(response.data.data);
-      setCurrentPage(response.data.current_page);
-      setLastPage(response.data.last_page);
-      setTotal(response.data.total);
+      const response = await apiClient.get<ProductsResponse>('/products', { params });
+      // Laravel ResourceCollection preserves pagination structure
+      const responseData = response.data;
+      setProducts(responseData.data || []);
+      setCurrentPage(responseData.current_page || 1);
+      setLastPage(responseData.last_page || 1);
+      setTotal(responseData.total || 0);
     } catch (err) {
       setError('Failed to fetch products');
       console.error(err);
@@ -135,9 +138,11 @@ const Dashboard = () => {
     setCurrentPage(1);
   };
 
-  const getImageUrl = (image: string | null) => {
-    if (!image) return 'https://via.placeholder.com/300x200?text=No+Image';
-    return `http://localhost:8000/storage/${image}`;
+  const getImageUrl = (imageUrl: string | null | undefined, imagePath: string | null) => {
+    if (imageUrl) return imageUrl;
+    if (!imagePath) return 'https://via.placeholder.com/300x200?text=No+Image';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8000';
+    return `${baseUrl}/storage/${imagePath}`;
   };
 
   return (
@@ -228,7 +233,7 @@ const Dashboard = () => {
                 onClick={() => navigate(`/products/${product.id}`)}
               >
                 <div className="product-image">
-                  <img src={getImageUrl(product.image)} alt={product.name} />
+                  <img src={getImageUrl(product.image_url, product.image)} alt={product.name} />
                 </div>
                 <div className="product-details">
                   <h3>{product.name}</h3>
